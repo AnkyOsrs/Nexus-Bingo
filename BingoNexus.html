@@ -748,8 +748,17 @@ body.leader #lines-panel{ top:40%; }
 /* team editor rows */
 .team-edit-row{
   display:grid; grid-template-columns:38px 1fr 42px;
-  gap:10px; align-items:center; margin-bottom:8px;
+  gap:8px 10px; align-items:center;
+  margin-bottom:10px; padding:10px;
+  border:1px solid rgba(140,116,68,.3); border-radius:5px;
+  background:rgba(255,255,255,.03);
 }
+.team-pin-line{
+  grid-column:1 / -1;
+  display:flex; gap:8px; align-items:center;
+}
+.team-pin-line .tpin{ flex:1; font-size:13px !important; padding:6px 9px !important; }
+.team-pin-line .btn{ white-space:nowrap; }
 .team-edit-row input[type=color]{
   width:38px; height:34px; padding:2px; border-radius:4px;
   background:rgba(0,0,0,.5); border:1px solid var(--panel-br); cursor:pointer;
@@ -850,7 +859,7 @@ body.shooting .tile-editbtn{ display:none !important; }
 
   <!-- ===================== TEAM LEADER TOOLBAR ===================== -->
   <div id="leader-bar">
-    <span class="tag">TEAM LEADER</span>
+    <span class="tag">TEAM LEADER <span id="leader-bar-team"></span></span>
     <button class="btn small" data-lact="discord">My Team's Webhook</button>
     <button class="btn small primary" data-lact="exit">Exit</button>
   </div>
@@ -1037,6 +1046,11 @@ body.shooting .tile-editbtn{ display:none !important; }
     <button class="btn small" id="team-add" style="margin-top:10px">+ Add team</button>
     <div class="hint">Removing a team deletes its progress. Colours are used for the standings and the
     stripe along the bottom of each completed tile.</div>
+    <div class="hint"><b>Leader PINs.</b> Give a team its own PIN and it unlocks leader mode for
+    <i>that team only</i> — they can watch every board but can only mark their own, so nobody
+    edits the wrong team by accident. Leave it blank and they use the shared leader PIN, which
+    still opens every team (handy for you or a head organiser). PINs are stored hashed, so an
+    existing one can't be shown back — type a new one to replace it, or use Clear PIN.</div>
     <div class="modal-actions">
       <button class="btn" data-close="">Cancel</button>
       <button class="btn primary" id="teams-save">Save teams</button>
@@ -1229,7 +1243,7 @@ body.shooting .tile-editbtn{ display:none !important; }
      about the board (tiles, images, teams, settings, Firebase config) lives
      here, so an exported HTML file is fully self-contained.
      ========================================================================== -->
-<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.458,"gy":22.87,"gw":7.3958,"gh":13.1481,"px":3,"py":3},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a"},{"id":"team2","name":"Team 2","color":"#3d8ee8"},{"id":"team3","name":"Team 3","color":"#46c05a"},{"id":"team4","name":"Team 4","color":"#e0a52e"},{"id":"team5","name":"Team 5","color":"#a862e8"}],"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true,"gateway":false},"firebase":null,"updatedAt":0}</script>
+<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.458,"gy":22.87,"gw":7.3958,"gh":13.1481,"px":3,"py":3},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a","pinHash":""},{"id":"team2","name":"Team 2","color":"#3d8ee8","pinHash":""},{"id":"team3","name":"Team 3","color":"#46c05a","pinHash":""},{"id":"team4","name":"Team 4","color":"#e0a52e","pinHash":""},{"id":"team5","name":"Team 5","color":"#a862e8","pinHash":""}],"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true,"gateway":false},"firebase":null,"updatedAt":0}</script>
 
 <!-- html2canvas 1.4.1 (MIT) — bundled so board screenshots work with no
      internet connection and no CDN dependency. -->
@@ -1386,7 +1400,7 @@ function defaultState(){
       id: "t" + (i+1), name: "", desc: "", img: "", pts: 10
     })),
     teams: Array.from({length:5}, (_,i)=>({
-      id: "team" + (i+1), name: "Team " + (i+1), color: TEAM_COLORS[i]
+      id: "team" + (i+1), name: "Team " + (i+1), color: TEAM_COLORS[i], pinHash: ""
     })),
     /* progress[teamId][tileId] = {at, by, proof} */
     progress: {},
@@ -1416,6 +1430,9 @@ let currentTeam = null;
 let isAdmin = false;
 let isLeader = false;
 let isRef = false;
+/* null = unlocked with the shared PIN, so every team is editable.
+   A team id = unlocked with that team's own PIN, and only it is editable. */
+let leaderTeam = null;
 let applyingRemote = false;
 let editingIndex = -1;
 let markingIndex = -1;
@@ -1460,7 +1477,8 @@ function migrate(obj){
   s.teams = s.teams.map((t,i)=>({
     id: t.id || ("team"+(i+1)),
     name: t.name || ("Team "+(i+1)),
-    color: t.color || TEAM_COLORS[i % TEAM_COLORS.length]
+    color: t.color || TEAM_COLORS[i % TEAM_COLORS.length],
+    pinHash: t.pinHash || ""      /* optional: this team's own leader PIN */
   }));
   if(!Array.isArray(s.tiles)) s.tiles = d.tiles;
   s.tiles = s.tiles.slice(0, TILE_COUNT);
@@ -1982,12 +2000,17 @@ document.addEventListener("keydown", e=>{
    viewer  < team leader < admin.
    Leaders may mark tiles and post to Discord; only admins may change the
    board itself. Posting is always leader-or-above, whatever `who` says. */
+/* A leader who unlocked with their own team's PIN is scoped to that team —
+   they can still watch every other board, they just can't touch it. */
+function leadsCurrentTeam(){ return isLeader && (!leaderTeam || leaderTeam === currentTeam); }
+
 function canMark(){
   if(S.settings.who === "anyone") return true;
-  if(S.settings.who === "admin")  return isAdmin;
-  return isAdmin || isLeader;              /* "leader" */
+  if(isAdmin) return true;
+  if(S.settings.who === "admin") return false;
+  return leadsCurrentTeam();               /* "leader" */
 }
-function canPost(){ return isAdmin || isLeader; }
+function canPost(){ return isAdmin || leadsCurrentTeam(); }
 
 function canReview(){ return isAdmin || isRef; }
 
@@ -2005,6 +2028,8 @@ function applyRoleUi(){
   document.body.classList.toggle("ref", isRef);
   $("#btn-admin").textContent  = isAdmin  ? "Admin ✓" : "Admin";
   $("#btn-leader").firstChild.textContent = isLeader ? "Team Leader ✓" : "Team Leader";
+  $("#leader-bar-team").textContent = leaderTeam ? ("· " + teamName(leaderTeam)) : (isLeader ? "· all teams" : "");
+  $("#leader-bar-team").style.color = leaderTeam ? (teamColor(leaderTeam) || "#8fc2f5") : "#8fc2f5";
   $("#btn-ref").firstChild.textContent    = isRef    ? "Referee ✓" : "Referee";
   $("#btn-leader").style.display = isAdmin ? "none" : "";
   $("#btn-ref").style.display    = isAdmin ? "none" : "";
@@ -2022,10 +2047,11 @@ function setAdmin(on){
   applyRoleUi();
 }
 
-function setLeader(on){
+function setLeader(on, teamId){
   isLeader = on;
+  leaderTeam = on ? (teamId || null) : null;
   try{
-    if(on) sessionStorage.setItem(LS_LEADER, "1");
+    if(on) sessionStorage.setItem(LS_LEADER, leaderTeam || "1");
     else sessionStorage.removeItem(LS_LEADER);
   }catch(e){}
   applyRoleUi();
@@ -2043,11 +2069,24 @@ function leaderPinSubmit(){
   if(Date.now() < lpLocked){ $("#lp-err").textContent = "Too many attempts — wait a moment."; return; }
   const v = $("#lp-input").value;
   if(!v){ $("#lp-err").textContent = "Enter the PIN."; return; }
-  if(sha256(PIN_SALT + v) === (S.settings.leaderPinHash || LEADER_PIN_HASH_DEFAULT)){
+  const h = sha256(PIN_SALT + v);
+  /* a team's own PIN wins over the shared one, so a team can be handed a
+     PIN that only opens their board */
+  const own = S.teams.find(t => t.pinHash && t.pinHash === h);
+  const shared = h === (S.settings.leaderPinHash || LEADER_PIN_HASH_DEFAULT);
+  if(own || shared){
     lpTries = 0;
     closeModal("m-leaderpin");
-    setLeader(true);
-    toast("Team leader mode enabled.");
+    if(own){
+      currentTeam = own.id;
+      try{ localStorage.setItem(LS_TEAM, currentTeam); }catch(e){}
+      setLeader(true, own.id);
+      renderAll();
+      toast("Team leader mode: " + own.name + "\nYou can only mark tiles for your team.", 3200);
+    } else {
+      setLeader(true, null);
+      toast("Team leader mode enabled\nfor all teams.", 2600);
+    }
   } else {
     lpTries++;
     $("#lp-err").textContent = "Incorrect PIN.";
@@ -2458,10 +2497,15 @@ function openMark(i){
   $("#mk-complete").style.display     = allowed ? "inline-block" : "none";
   $("#mk-uncomplete").style.display   = (allowed && p) ? "inline-block" : "none";
   if(!allowed){
+    const scoped = isLeader && leaderTeam && leaderTeam !== currentTeam;
     $("#mk-body").innerHTML += '<div style="margin-top:12px;color:#e8b96a;font-size:13px">' +
-      (S.settings.who === "admin"
-        ? "Only admins can mark tiles on this board."
-        : "Only team leaders and admins can mark tiles. Use the Team Leader button below the board.") +
+      (scoped
+        ? "You're the leader for <b>" + esc(teamName(leaderTeam)) + "</b>, so you can look at " +
+          esc(teamName(currentTeam)) + "'s board but not change it. Switch the dropdown back to " +
+          esc(teamName(leaderTeam)) + " to mark tiles."
+        : S.settings.who === "admin"
+          ? "Only admins can mark tiles on this board."
+          : "Only team leaders and admins can mark tiles. Use the Team Leader button below the board.") +
       '</div>';
   }
   openModal("m-mark");
@@ -2747,36 +2791,77 @@ function openTeams(){
 function drawTeamRows(list){
   const wrap = $("#teams-list");
   wrap.innerHTML = list.map((t,i) =>
-    '<div class="team-edit-row" data-id="' + esc(t.id) + '">' +
+    '<div class="team-edit-row" data-id="' + esc(t.id) + '" data-hash="' + esc(t.pinHash || "") + '">' +
       '<input type="color" value="' + esc(t.color) + '" />' +
-      '<input type="text" maxlength="28" value="' + esc(t.name) + '" placeholder="Team name" />' +
+      '<input type="text" class="tname" maxlength="28" value="' + esc(t.name) + '" placeholder="Team name" />' +
       '<button class="btn small danger" data-del="' + i + '">✕</button>' +
+      '<div class="team-pin-line">' +
+        '<input type="text" class="tpin" autocomplete="off" maxlength="40" placeholder="' +
+          (t.pinHash ? "PIN set — type here to replace it" : "Leader PIN for this team (optional)") + '" />' +
+        (t.pinHash ? '<button type="button" class="btn small" data-clearpin>Clear PIN</button>' : '') +
+      '</div>' +
     '</div>'
   ).join("");
 }
 $("#teams-list").addEventListener("click", e=>{
+  const clear = e.target.closest("[data-clearpin]");
+  if(clear){
+    const row = clear.closest(".team-edit-row");
+    row.dataset.hash = "";
+    $(".tpin", row).placeholder = "Leader PIN for this team (optional)";
+    $(".tpin", row).value = "";
+    clear.remove();
+    toast("PIN cleared — save to apply.", 2000);
+    return;
+  }
   const b = e.target.closest("[data-del]"); if(!b) return;
   const rows = readTeamRows();
   if(rows.length <= 1){ toast("You need at least one team.", 2000); return; }
   rows.splice(+b.dataset.del, 1);
   drawTeamRows(rows);
 });
+/* An empty PIN box means "leave it as it was" — the stored value is a hash,
+   so there is nothing to show back. Clear PIN is how you remove one. */
 function readTeamRows(){
-  return $$("#teams-list .team-edit-row").map(r => ({
-    id: r.dataset.id,
-    color: $("input[type=color]", r).value,
-    name: $("input[type=text]", r).value.trim() || "Team"
-  }));
+  return $$("#teams-list .team-edit-row").map(r => {
+    const typed = ($(".tpin", r).value || "").trim();
+    return {
+      id: r.dataset.id,
+      color: $("input[type=color]", r).value,
+      name: $(".tname", r).value.trim() || "Team",
+      pinHash: typed ? sha256(PIN_SALT + typed) : (r.dataset.hash || ""),
+      typedPin: typed
+    };
+  });
 }
 $("#team-add").addEventListener("click", ()=>{
   const rows = readTeamRows();
   if(rows.length >= 12){ toast("12 teams is the maximum.", 2000); return; }
   let n = 1; while(rows.some(r => r.id === "team" + n)) n++;
-  rows.push({ id:"team"+n, name:"Team "+n, color:TEAM_COLORS[rows.length % TEAM_COLORS.length] });
+  rows.push({ id:"team"+n, name:"Team "+n, color:TEAM_COLORS[rows.length % TEAM_COLORS.length], pinHash:"" });
   drawTeamRows(rows);
 });
 $("#teams-save").addEventListener("click", ()=>{
   const rows = readTeamRows();
+
+  /* Guard the two ways a per-team PIN can silently do the wrong thing:
+     a PIN too short to be worth anything, and two teams sharing one (the
+     first match would win and the second leader would open the wrong board). */
+  const short = rows.find(r => r.typedPin && r.typedPin.length < 4);
+  if(short){ toast("Leader PIN for " + short.name + "\nmust be at least 4 characters.", 3400); return; }
+  const seen = {};
+  for(const r of rows){
+    if(!r.pinHash) continue;
+    if(seen[r.pinHash]){
+      toast(seen[r.pinHash] + " and " + r.name + "\nhave the same leader PIN.\nGive each team its own.", 4200);
+      return;
+    }
+    seen[r.pinHash] = r.name;
+  }
+  const clash = rows.find(r => r.pinHash && r.pinHash === (S.settings.leaderPinHash || LEADER_PIN_HASH_DEFAULT));
+  if(clash){ toast(clash.name + "'s PIN is the same as the\nshared leader PIN. Pick a different one.", 4200); return; }
+
+  rows.forEach(r => { delete r.typedPin; });
   const keep = new Set(rows.map(r => r.id));
   Object.keys(S.progress || {}).forEach(id => { if(!keep.has(id)) delete S.progress[id]; });
   /* drop webhooks belonging to teams that no longer exist, so a re-used
@@ -2926,13 +3011,21 @@ function refHintText(){
 }
 function openDiscord(){
   const m = readHooks();
+  /* a leader scoped to one team only needs their own team's box */
+  const visibleTeams = (isLeader && leaderTeam && !isAdmin)
+    ? S.teams.filter(t => t.id === leaderTeam)
+    : S.teams;
+  $("#dc-all").closest(".modal").querySelectorAll("label[for='dc-all']").forEach(el=>{
+    el.style.display = visibleTeams.length === S.teams.length ? "" : "none";
+  });
+  $("#dc-all").style.display = visibleTeams.length === S.teams.length ? "" : "none";
   const sharedRef = S.settings.refereeHook || "";
   const localRef  = m.__referee__ || "";
   $("#dc-ref").value = localRef || sharedRef;
   $("#dc-ref-share").checked  = !localRef && !!sharedRef;
   $("#dc-ref-share").disabled = !isAdmin;
   $("#dc-ref-hint").textContent = refHintText();
-  $("#dc-teams").innerHTML = S.teams.map(t =>
+  $("#dc-teams").innerHTML = visibleTeams.map(t =>
     '<div class="hook-row' + (t.id === currentTeam ? " is-me" : "") + '">' +
       '<span class="hook-dot" style="background:' + esc(t.color) + ';color:' + esc(t.color) + '"></span>' +
       '<div class="hook-field">' +
@@ -2967,18 +3060,27 @@ function saveRefereeHook(map){
 }
 
 function collectHooks(){
-  const m = {};
+  /* start from what is already stored: when the dialog is showing only one
+     team's box (a scoped leader), saving must not wipe the others */
+  const m = readHooks();
   let bad = null;
   $$("#dc-teams input[data-team]").forEach(inp=>{
     const v = inp.value.trim();
-    if(!v) return;
+    if(!v){ delete m[inp.dataset.team]; return; }
     if(!HOOK_RE.test(v)) bad = bad || teamName(inp.dataset.team);
     m[inp.dataset.team] = v;
   });
-  const all = $("#dc-all").value.trim();
-  if(all){
-    if(!HOOK_RE.test(all)) bad = bad || "the board-wide fallback";
-    m.__all__ = all;
+  /* only act on the fallback when its box is actually on screen — it is
+     hidden for a leader scoped to one team, and an unseen box must not
+     silently clear a value someone else set */
+  if($("#dc-all").style.display !== "none"){
+    const all = $("#dc-all").value.trim();
+    if(all){
+      if(!HOOK_RE.test(all)) bad = bad || "the board-wide fallback";
+      m.__all__ = all;
+    } else {
+      delete m.__all__;
+    }
   }
   return { map: m, bad: bad };
 }
@@ -3338,7 +3440,9 @@ function doReset(){
 $("#team-select").addEventListener("change", e=>{
   currentTeam = e.target.value;
   try{ localStorage.setItem(LS_TEAM, currentTeam); }catch(err){}
-  renderGrid(); renderPanels();
+  /* what a scoped leader may do depends on which team is selected, so the
+     role-driven controls have to be re-evaluated on every switch */
+  renderGrid(); renderPanels(); applyRoleUi();
 });
 
 (function init(){
@@ -3363,7 +3467,8 @@ $("#team-select").addEventListener("change", e=>{
 
   try{
     if(sessionStorage.getItem(LS_ADMIN)  === "1") isAdmin  = true;
-    if(sessionStorage.getItem(LS_LEADER) === "1") isLeader = true;
+    const lv = sessionStorage.getItem(LS_LEADER);
+    if(lv){ isLeader = true; leaderTeam = (lv === "1") ? null : lv; }
     if(sessionStorage.getItem(LS_REF)    === "1") isRef    = true;
   }catch(e){}
 
