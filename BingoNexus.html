@@ -227,6 +227,38 @@ body{
   mix-blend-mode:screen;
 }
 
+/* ===== Gateway locking — the padlock treatment from the Trial of Tiers
+   board. A locked tile is dimmed and desaturated so the art still reads
+   through, with the lock glyph on top. ===== */
+.tile.locked{
+  cursor:not-allowed;
+  filter:grayscale(.85) brightness(.55);
+}
+.tile.locked:hover{ box-shadow:none; background:rgba(10,10,8,.10); }
+/* corner badge rather than a lock across the middle — teams can still read
+   what every tile asks for while they're working out how to open the board */
+.tile.locked::before{
+  content:"🔒";
+  position:absolute; left:.45cqw; top:.35cqw;
+  font-size:1.25cqw; line-height:1;
+  text-shadow:0 2px 5px rgba(0,0,0,.95);
+  z-index:5; pointer-events:none;
+}
+.tile.locked .tile-name{ opacity:.75; }
+.tile.locked:active{ transform:none; }
+/* the centre tile while it is still the way in — a gold key-hole glow */
+.tile.gateway{
+  box-shadow:
+    inset 0 0 22px 9px rgba(255,215,110,.20),
+    0 0 14px rgba(255,205,90,.28);
+}
+.tile.gateway::before{
+  content:"🔑";
+  position:absolute; right:.3cqw; bottom:.2cqw;
+  font-size:1.3cqw; z-index:5; pointer-events:none;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.9));
+}
+
 /* ---- admin-mode affordances ---- */
 body.admin .tile{ cursor:grab; }
 body.admin .tile.dragging{ opacity:.45; cursor:grabbing; }
@@ -1048,6 +1080,11 @@ body.shooting .tile-editbtn{ display:none !important; }
     <div class="hint">With both on, points land straight away and a rejection takes them back off —
     pending tiles glow amber instead of green. Turn the second off if only approved tiles should count.</div>
 
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px">
+      <input type="checkbox" id="st-gateway" style="width:auto"> Centre tile unlocks the rest of the board
+    </label>
+    <div class="hint" id="st-gateway-hint"></div>
+
     <label for="st-refpin">Referee PIN</label>
     <input type="text" id="st-refpin" autocomplete="off" placeholder="Leave blank to keep the current PIN">
     <div class="hint">Defaults to <code>referee</code>. Share it with whoever is judging.</div>
@@ -1192,7 +1229,7 @@ body.shooting .tile-editbtn{ display:none !important; }
      about the board (tiles, images, teams, settings, Firebase config) lives
      here, so an exported HTML file is fully self-contained.
      ========================================================================== -->
-<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.458,"gy":22.87,"gw":7.3958,"gh":13.1481,"px":3,"py":3},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a"},{"id":"team2","name":"Team 2","color":"#3d8ee8"},{"id":"team3","name":"Team 3","color":"#46c05a"},{"id":"team4","name":"Team 4","color":"#e0a52e"},{"id":"team5","name":"Team 5","color":"#a862e8"}],"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true},"firebase":null,"updatedAt":0}</script>
+<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.458,"gy":22.87,"gw":7.3958,"gh":13.1481,"px":3,"py":3},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a"},{"id":"team2","name":"Team 2","color":"#3d8ee8"},{"id":"team3","name":"Team 3","color":"#46c05a"},{"id":"team4","name":"Team 4","color":"#e0a52e"},{"id":"team5","name":"Team 5","color":"#a862e8"}],"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true,"gateway":false},"firebase":null,"updatedAt":0}</script>
 
 <!-- html2canvas 1.4.1 (MIT) — bundled so board screenshots work with no
      internet connection and no CDN dependency. -->
@@ -1363,7 +1400,8 @@ function defaultState(){
       refPinHash: REF_PIN_HASH_DEFAULT,
       refereeHook: "",       /* board-wide referee channel, set by an admin */
       review: true,          /* completions wait for a referee's approval */
-      pendingCounts: true    /* ...but score provisionally while they wait */
+      pendingCounts: true,   /* ...but score provisionally while they wait */
+      gateway: false         /* centre tile must be done before the rest opens */
     },
     /* null here means "nothing chosen yet", which falls back to the built-in
        project above. {off:true} is an explicit "no sync" chosen by an admin. */
@@ -1400,12 +1438,23 @@ function readBaked(){
 function migrate(obj){
   const d = defaultState();
   if(!obj || typeof obj !== "object") return d;
+  /* Capture the defaults BEFORE Object.assign — it mutates `d`, so after that
+     line `d.settings` IS `obj.settings` and merging against it would be a
+     no-op. That bug silently dropped every setting a saved board didn't
+     already have, which is exactly how boards saved by an older version end
+     up with `review` undefined and an empty referee queue. */
+  const defSettings = d.settings;
   const s = Object.assign(d, obj);
   s.calib    = Object.assign({}, DEFAULT_CALIB, obj.calib || {});
-  s.settings = Object.assign({}, d.settings, obj.settings || {});
+  s.settings = Object.assign({}, defSettings, obj.settings || {});
   if(!s.settings.leaderPinHash) s.settings.leaderPinHash = LEADER_PIN_HASH_DEFAULT;
   if(!s.settings.refPinHash)    s.settings.refPinHash    = REF_PIN_HASH_DEFAULT;
   if(["leader","admin","anyone"].indexOf(s.settings.who) < 0) s.settings.who = "leader";
+  /* booleans need a type check, not a truthiness check, so an intentional
+     `false` survives while a missing key falls back to the default */
+  ["review","pendingCounts","sound","autoPost","gateway"].forEach(k=>{
+    if(typeof s.settings[k] !== "boolean") s.settings[k] = defSettings[k];
+  });
   s.progress = obj.progress && typeof obj.progress === "object" ? obj.progress : {};
   if(!Array.isArray(s.teams) || !s.teams.length) s.teams = d.teams;
   s.teams = s.teams.map((t,i)=>({
@@ -1645,6 +1694,25 @@ function counts(r){
 function isClaimed(teamId, tileId){ const r = rec(teamId, tileId); return !!r && !isRejected(r); }
 function isDone(teamId, tileId){ return counts(rec(teamId, tileId)); }
 
+/* ---- gateway tile ------------------------------------------------------
+   With `gateway` on, the middle square of the grid is the way in: until a
+   team completes it, the rest of their board is padlocked. It's per team,
+   so each one opens its own board. A tile a team already holds is never
+   locked — turning this on mid-event can't strip anyone's progress, and a
+   centre tile rejected by a referee re-locks only what hasn't been claimed. */
+const CENTRE_INDEX = Math.floor(TILE_COUNT / 2);   /* 12 on a 5x5 */
+function gatewayOpen(teamId){
+  if(!S.settings.gateway) return true;
+  const centre = S.tiles[CENTRE_INDEX];
+  return !!centre && counts(rec(teamId, centre.id));
+}
+function isLockedFor(teamId, idx){
+  if(!S.settings.gateway) return false;
+  if(idx === CENTRE_INDEX) return false;              /* the key is never locked */
+  if(isClaimed(teamId, S.tiles[idx].id)) return false; /* already theirs */
+  return !gatewayOpen(teamId);
+}
+
 function pendingItems(){
   const out = [];
   S.teams.forEach(tm=>{
@@ -1781,6 +1849,12 @@ function renderGrid(){
     tile.classList.toggle("rejected", !!rejtd);
     tile.classList.toggle("in-line", !!(mine && !pend && lineIdx.has(i)));
     $(".tile-check", cell).textContent = pend ? "⏳" : (rejtd ? "✖" : "✔");
+
+    const locked = currentTeam ? isLockedFor(currentTeam, i) : false;
+    tile.classList.toggle("locked", locked);
+    tile.classList.toggle("gateway", !!(S.settings.gateway && i === CENTRE_INDEX && !gatewayOpen(currentTeam)));
+    if(locked) tile.title = "🔒 Complete " + (S.tiles[CENTRE_INDEX].name || "the centre tile") + " to unlock the board";
+    else tile.removeAttribute("title");
 
     /* bottom stripe: one segment per team that has claimed this tile */
     const claims = S.teams.filter(tm => isClaimed(tm.id, t.id));
@@ -2244,6 +2318,11 @@ $("#grid").addEventListener("click", e=>{
   if(!tile) return;
   const i = +tile.dataset.i;
   if(edit && isAdmin){ e.stopPropagation(); openTileEditor(i); return; }
+  if(currentTeam && isLockedFor(currentTeam, i) && !isAdmin){
+    const key = S.tiles[CENTRE_INDEX].name || "the centre tile";
+    toast("🔒 Locked\nComplete " + key + " to unlock the board.", 3000);
+    return;
+  }
   openMark(i);
 });
 
@@ -2503,6 +2582,13 @@ $("#mk-uncomplete").addEventListener("click", ()=> setTileDone(false));
 function setTileDone(done){
   if(markingIndex < 0 || !currentTeam) return;
   if(!canMark()){ toast("Admins only."); return; }
+  /* the gate is enforced here too, not only on the tile click, so it can't
+     be walked around by keyboard or a stale open dialog */
+  if(done && isLockedFor(currentTeam, markingIndex) && !isAdmin){
+    closeModal("m-mark");
+    toast("🔒 Locked\nComplete " + (S.tiles[CENTRE_INDEX].name || "the centre tile") + " first.", 3000);
+    return;
+  }
   const t = S.tiles[markingIndex];
   const before = teamStats(currentTeam);
 
@@ -2720,6 +2806,13 @@ function openSettings(){
   $("#st-refpin").value    = "";
   $("#st-review").checked        = !!S.settings.review;
   $("#st-pending-counts").checked = !!S.settings.pendingCounts;
+  $("#st-gateway").checked        = !!S.settings.gateway;
+  const centre = S.tiles[CENTRE_INDEX];
+  $("#st-gateway-hint").innerHTML =
+    'Every other tile is padlocked until a team completes the middle square — currently <b>' +
+    esc((centre && centre.name) || ("Tile " + (CENTRE_INDEX + 1))) + '</b>. Each team unlocks its own ' +
+    'board. Tiles a team already holds are never locked, so you can switch this on mid-event ' +
+    'without taking anything away.';
   $("#st-sound").checked   = !!S.settings.sound;
   $("#st-autopost").checked = !!S.settings.autoPost;
   openModal("m-settings");
@@ -2735,6 +2828,7 @@ $("#st-save").addEventListener("click", ()=>{
 
   S.settings.review        = $("#st-review").checked;
   S.settings.pendingCounts = $("#st-pending-counts").checked;
+  S.settings.gateway       = $("#st-gateway").checked;
 
   const newPin = $("#st-leaderpin").value.trim();
   const newRef = $("#st-refpin").value.trim();
