@@ -36,7 +36,7 @@
      the frame or hangs outside it. Raise them if you swap in art with a
      thicker border. */
   --edge-x:2.6%;   /* 50px of 1920 — clears the 32px frame with margin */
-  --edge-y:3.4%;   /* 48px of 1080 */
+  --edge-y:4.4%;   /* 48px of 1080 */
   --panel-w:25.5%; /* side panel width */
 
   --panel-bg:rgba(18,15,10,.84);
@@ -659,28 +659,65 @@ body.leader #lines-panel{ top:40%; }
 }
 #mk-drop.has-shot{ cursor:default; border-style:solid; border-color:rgba(140,116,68,.5); }
 #mk-drop-empty{ text-align:center; color:var(--ink-dim); pointer-events:none; }
-#mk-drop-empty .dz-icon{ font-size:26px; line-height:1; margin-bottom:6px; opacity:.8; }
+#mk-drop-empty .dz-icon{ font-size:24px; line-height:1; margin-bottom:6px; opacity:.8; letter-spacing:-4px; }
 #mk-drop-empty .dz-main{ font-size:14px; color:var(--ink); }
-#mk-drop-empty .dz-sub{ font-size:12px; margin-top:3px; }
-#mk-drop-full{ width:100%; display:flex; flex-direction:column; gap:8px; align-items:center; }
-#mk-shot{
-  max-width:100%; max-height:240px;
-  border-radius:4px; border:1px solid rgba(140,116,68,.5);
-  display:block;
-}
-.dz-meta{
-  display:flex; align-items:center; gap:12px; justify-content:center;
-  font-size:12px; color:var(--ink-dim);
-}
+#mk-drop-empty .dz-sub{ font-size:12px; margin-top:3px; line-height:1.6; }
+#mk-drop-empty .dz-sub b{ color:var(--gold); }
 
-/* proof thumbnail wherever a completion is shown */
+/* thumbnail strip — one chip per attached screenshot, plus an add tile */
+#mk-shots{
+  width:100%;
+  display:flex; flex-wrap:wrap; gap:8px;
+  align-items:flex-start;
+}
+.shot-chip{
+  position:relative;
+  width:104px; height:78px;
+  border-radius:4px; overflow:hidden;
+  border:1px solid rgba(140,116,68,.5);
+  background:rgba(0,0,0,.4);
+}
+.shot-chip img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
+.shot-chip .shot-del{
+  position:absolute; right:3px; top:3px;
+  width:20px; height:20px; border-radius:50%;
+  border:1px solid rgba(255,120,120,.6);
+  background:rgba(20,6,6,.85); color:#ff9b9b;
+  font-size:12px; line-height:1; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  padding:0;
+}
+.shot-chip .shot-del:hover{ background:#552222; color:#fff; }
+.shot-chip .shot-n{
+  position:absolute; left:3px; bottom:3px;
+  font-size:10px; padding:1px 5px; border-radius:3px;
+  background:rgba(0,0,0,.72); color:var(--ink-dim);
+}
+.shot-add{
+  width:104px; height:78px;
+  border:1px dashed rgba(140,116,68,.65);
+  border-radius:4px;
+  background:rgba(0,0,0,.25);
+  color:var(--ink-dim);
+  font-family:inherit; font-size:12px; line-height:1.3;
+  cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+}
+.shot-add:hover{ border-color:var(--gold); color:var(--gold); background:rgba(255,223,110,.07); }
+.shot-add .plus{ font-size:19px; line-height:1; }
+#mk-shot-count{ color:var(--gold); font-size:12px; }
+
+/* proof thumbnails wherever a completion is shown */
+.proof-strip{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
 .proof-thumb{
   max-width:100%; max-height:150px;
-  margin-top:6px; border-radius:4px;
+  border-radius:4px;
   border:1px solid rgba(140,116,68,.5);
   display:block; cursor:zoom-in;
 }
-#tip .proof-thumb{ max-height:120px; cursor:default; }
+.proof-strip .proof-thumb{ width:96px; height:72px; object-fit:cover; }
+#tip .proof-strip .proof-thumb{ width:78px; height:58px; cursor:default; }
+.proof-more{ font-size:11px; color:var(--gold-dim); align-self:flex-end; padding-bottom:4px; }
 
 /* ---- review queue ---- */
 #rq-tabs{ display:flex; gap:8px; margin-bottom:14px; }
@@ -695,11 +732,15 @@ body.leader #lines-panel{ top:40%; }
 }
 .rq-item.is-a{ border-left-color:#46c05a; }
 .rq-item.is-r{ border-left-color:#e6484a; }
+.rq-strip{ margin-top:0; max-width:132px; gap:5px; }
 .rq-shot{
   width:132px; height:96px; object-fit:cover;
   border-radius:4px; border:1px solid rgba(140,116,68,.5);
   cursor:zoom-in; background:rgba(0,0,0,.4);
 }
+/* with several screenshots they tile two-up inside the same column */
+.rq-strip .rq-shot:not(:only-of-type){ width:63px; height:50px; }
+.rq-strip .proof-more{ font-size:10px; padding-bottom:0; align-self:center; }
 .rq-noshot{
   width:132px; height:96px; border-radius:4px;
   border:1px dashed rgba(200,120,120,.5);
@@ -733,7 +774,31 @@ body.leader #lines-panel{ top:40%; }
   border:1px solid rgba(140,116,68,.55); border-radius:5px;
   box-shadow:0 20px 60px rgba(0,0,0,.8);
 }
-#lightbox .lb-note{ font-size:13px; color:var(--ink-dim); text-align:center; }
+#lightbox .lb-note{ font-size:13px; color:var(--ink-dim); text-align:center; order:3; width:100%; }
+#lightbox #lb-img{ order:2; }
+.lb-nav{
+  order:1;
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:46px; height:76px;
+  background:rgba(0,0,0,.6); color:var(--ink);
+  border:1px solid rgba(140,116,68,.5); border-radius:6px;
+  font-size:30px; line-height:1; font-family:inherit;
+  cursor:pointer; z-index:2;
+}
+.lb-nav:hover{ background:rgba(255,223,110,.16); color:var(--gold); }
+#lb-prev{ left:18px; }
+#lb-next{ right:18px; order:3; }
+.lb-nav[hidden]{ display:none !important; }
+/* clicking the image itself must not dismiss — people click it to look
+   closer, and it sits between two arrows — so give an explicit way out */
+#lb-close{
+  position:absolute; right:18px; top:18px; z-index:3;
+  width:40px; height:40px; border-radius:6px;
+  background:rgba(0,0,0,.6); color:var(--ink);
+  border:1px solid rgba(140,116,68,.5);
+  font-size:18px; line-height:1; font-family:inherit; cursor:pointer;
+}
+#lb-close:hover{ background:rgba(255,120,120,.2); color:#ff9b9b; border-color:rgba(200,80,80,.6); }
 #lightbox .lb-note a{ color:var(--gold); }
 
 /* tile editor image preview */
@@ -885,7 +950,13 @@ body.shooting .tile-editbtn{ display:none !important; }
 <div id="tip"></div>
 
 <!-- full-size proof viewer -->
-<div id="lightbox"><img id="lb-img" alt="Proof screenshot"><div class="lb-note" id="lb-note"></div></div>
+<div id="lightbox">
+  <button type="button" id="lb-close" aria-label="Close">✕</button>
+  <button type="button" id="lb-prev" class="lb-nav" aria-label="Previous">‹</button>
+  <img id="lb-img" alt="Proof screenshot">
+  <button type="button" id="lb-next" class="lb-nav" aria-label="Next">›</button>
+  <div class="lb-note" id="lb-note"></div>
+</div>
 
 <!-- =========================================================================
      MODALS
@@ -1008,24 +1079,19 @@ body.shooting .tile-editbtn{ display:none !important; }
       <label for="mk-who">Completed by (name)</label>
       <input type="text" id="mk-who" maxlength="40" placeholder="RSN">
 
-      <label>Proof screenshot</label>
+      <label>Proof screenshots <span id="mk-shot-count"></span></label>
       <div id="mk-drop" tabindex="0">
         <div id="mk-drop-empty">
-          <div class="dz-icon">🖼️</div>
-          <div class="dz-main">Drop a screenshot here</div>
-          <div class="dz-sub">or paste with Ctrl+V · or click to browse</div>
+          <div class="dz-icon">🖼️🖼️</div>
+          <div class="dz-main">Drop screenshots here</div>
+          <div class="dz-sub">or paste with Ctrl+V · or click to browse<br>
+            <b>You can add several</b> — drop or select as many as you need</div>
         </div>
-        <div id="mk-drop-full" hidden="">
-          <img id="mk-shot" alt="Proof screenshot">
-          <div class="dz-meta">
-            <span id="mk-shot-info"></span>
-            <button type="button" class="btn small danger" id="mk-shot-clear">Remove</button>
-          </div>
-        </div>
+        <div id="mk-shots" hidden=""></div>
       </div>
-      <input type="file" id="mk-shot-file" accept="image/*" hidden="">
-      <div class="hint" id="mk-shot-hint">The full-size image is posted to Discord and a small preview
-      is kept on the board — no need to upload it anywhere yourself.</div>
+      <input type="file" id="mk-shot-file" accept="image/*" multiple="" hidden="">
+      <div class="hint" id="mk-shot-hint">Full-size images are posted to Discord and small previews
+      are kept on the board — no need to upload them anywhere yourself.</div>
 
       <label for="mk-proof">Notes (optional)</label>
       <textarea id="mk-proof" maxlength="400" placeholder="Drop name, split, or a link — anything the referee should know"></textarea>
@@ -1990,7 +2056,12 @@ document.addEventListener("click", e=>{
   if(e.target.classList && e.target.classList.contains("modal-backdrop")) e.target.classList.remove("open");
 });
 document.addEventListener("keydown", e=>{
-  if(e.key === "Escape") $$(".modal-backdrop.open").forEach(m => m.classList.remove("open"));
+  if(e.key !== "Escape") return;
+  /* the image viewer sits on top of the dialogs: Escape closes that first,
+     otherwise paging through proof screenshots would throw away the
+     half-filled submission underneath it */
+  if($("#lightbox").classList.contains("open")) return;
+  $$(".modal-backdrop.open").forEach(m => m.classList.remove("open"));
 });
 
 /* ==========================================================================
@@ -2168,9 +2239,15 @@ function renderQueue(){
 
   list.innerHTML = items.map(it=>{
     const st = statusOf(it.r);
-    const shot = it.r.shot
-      ? '<img class="rq-shot proof-thumb" src="' + esc(it.r.shot) + '" data-full="' + esc(it.r.shot) +
-        '" data-link="' + esc(it.r.link || "") + '" alt="Proof" />'
+    const rqShots = shotsOf(it.r);
+    const shot = rqShots.length
+      ? '<div class="proof-strip rq-strip">' +
+          rqShots.map((s,k) =>
+            '<img class="rq-shot proof-thumb" src="' + esc(s) + '" data-full="' + esc(s) +
+            '" data-link="' + esc(it.r.link || "") + '" alt="Proof ' + (k+1) + '" />'
+          ).join("") +
+          (rqShots.length > 1 ? '<span class="proof-more">' + rqShots.length + ' screenshots</span>' : "") +
+        '</div>'
       : '<div class="rq-noshot">No proof screenshot attached</div>';
     let verdict = "";
     if(st === "a") verdict = '<div class="rq-verdict a">✔ Approved' + (it.r.rby ? " by " + esc(it.r.rby) : "") +
@@ -2383,7 +2460,8 @@ $("#grid").addEventListener("mousemove", e=>{
             (p.by ? " — " + esc(p.by) : "") +
             (p.at ? " · " + new Date(p.at).toLocaleDateString() : "") + '</span>';
     if(p.proof) html += '<span class="t-desc" style="margin-top:4px">' + esc(p.proof) + '</span>';
-    if(p.shot)  html += '<img class="proof-thumb" src="' + esc(p.shot) + '" alt="" />';
+    const tShots = shotsOf(p);
+    if(tShots.length) html += proofStrip(tShots, "", 3);
   }
   const others = S.teams.filter(tm => tm.id !== currentTeam && isDone(tm.id, t.id));
   if(others.length) html += '<span class="t-pts">Also: ' + others.map(o => esc(o.name)).join(", ") + '</span>';
@@ -2405,6 +2483,18 @@ $("#grid").addEventListener("mousemove", e=>{
   tip.style.left = x + "px"; tip.style.top = y + "px";
 });
 $("#grid").addEventListener("mouseleave", ()=> tip.classList.remove("show"));
+
+/* a row of clickable proof thumbnails; clicking any one pages through them all */
+function proofStrip(shots, link, limit){
+  const show = limit ? shots.slice(0, limit) : shots;
+  return '<div class="proof-strip">' +
+    show.map((s,i) =>
+      '<img class="proof-thumb" src="' + esc(s) + '" alt="Proof ' + (i+1) + '" ' +
+      'data-full="' + esc(s) + '" data-link="' + esc(link || "") + '" />'
+    ).join("") +
+    (shots.length > show.length ? '<span class="proof-more">+' + (shots.length - show.length) + ' more</span>' : "") +
+  '</div>';
+}
 
 function teamName(id){ const t = S.teams.find(x => x.id === id); return t ? t.name : "—"; }
 function teamColor(id){ const t = S.teams.find(x => x.id === id); return t ? t.color : "#5dff8f"; }
@@ -2474,8 +2564,8 @@ function openMark(i){
             (p.at ? ' <span style="color:var(--ink-dim)">· ' + new Date(p.at).toLocaleString() + '</span>' : "") +
             '</div>';
     if(p.proof) body += '<div style="margin-top:4px;color:var(--ink-dim);word-break:break-word">' + esc(p.proof) + '</div>';
-    if(p.shot) body += '<img class="proof-thumb" src="' + esc(p.shot) + '" alt="Proof screenshot" ' +
-                       'data-full="' + esc(p.shot) + '" data-link="' + esc(p.link || "") + '" />';
+    const shots = shotsOf(p);
+    if(shots.length) body += proofStrip(shots, p.link);
     if(p.link) body += '<div style="margin-top:6px"><a href="' + esc(p.link) +
                        '" target="_blank" rel="noopener" style="color:var(--gold);font-size:13px">' +
                        'Full-size proof in Discord →</a></div>';
@@ -2483,14 +2573,15 @@ function openMark(i){
   $("#mk-body").innerHTML = body;
   $("#mk-who").value   = (p && p.by) || "";
   $("#mk-proof").value = (p && p.proof) || "";
-  mkShot = (p && p.shot) ? { thumb: p.shot, blob: null, w: 0, h: 0 } : null;
+  mkShots = shotsOf(p).map(t => ({ thumb: t, blob: null, w: 0, h: 0 }));
   renderProofZone();
   const refSet = !!getRefereeHook();
-  $("#mk-shot-hint").innerHTML = refSet
-    ? "The full-size image is posted to the referee channel for review and a small preview is kept " +
-      "on the board — no need to upload it anywhere yourself."
-    : "A small preview is kept on the board. Set a team or referee webhook to also send the " +
-      "full-size image to Discord, which keeps the permanent copy.";
+  $("#mk-shot-hint").innerHTML = (refSet
+    ? "Full-size images are posted to the referee channel for review and small previews are kept " +
+      "on the board — no need to upload them anywhere yourself."
+    : "Small previews are kept on the board. Set a team or referee webhook to also send the " +
+      "full-size images to Discord, which keeps the permanent copies.")
+    + " Up to " + MAX_SHOTS + " screenshots per tile — drop or paste them one at a time or all together.";
 
   const allowed = canMark();
   $("#mk-proof-wrap").style.display   = allowed ? "block" : "none";
@@ -2518,55 +2609,92 @@ function openMark(i){
    image goes to Discord, which becomes the permanent copy, and the link back
    to that message is stored alongside the thumbnail.
    ========================================================================== */
-const PROOF_THUMB_MAX = 420;   /* px, stored in the board */
+/* Board previews are deliberately small: a full board with a screenshot on
+   every team-tile is the one thing that can fill the browser's ~5 MB store,
+   and allowing several per submission multiplies that. 340px JPEG lands
+   around 15 KB, and MAX_SHOTS caps the worst case. Full-size copies live in
+   Discord, which costs the board nothing. */
+const PROOF_THUMB_MAX = 340;   /* px, stored in the board */
 const PROOF_FULL_MAX  = 1600;  /* px, uploaded to Discord */
-let mkShot = null;             /* {thumb, blob|null, w, h} */
+const MAX_SHOTS = 6;           /* per submission; Discord allows 10 files */
+let mkShots = [];              /* [{thumb, blob|null, w, h}] */
+
+/* records written before multi-upload carry a single `shot` */
+function shotsOf(r){
+  if(!r) return [];
+  if(Array.isArray(r.shots)) return r.shots.filter(Boolean);
+  return r.shot ? [r.shot] : [];
+}
 
 function renderProofZone(){
   const zone = $("#mk-drop");
-  const has = !!(mkShot && mkShot.thumb);
-  zone.classList.toggle("has-shot", has);
-  $("#mk-drop-empty").hidden = has;
-  $("#mk-drop-full").hidden  = !has;
-  if(has){
-    $("#mk-shot").src = mkShot.thumb;
-    $("#mk-shot-info").textContent = mkShot.blob
-      ? (mkShot.w + "×" + mkShot.h + " · " + Math.round(mkShot.blob.size/1024) + " KB will be sent to Discord")
-      : "Saved with this tile";
-  }
+  const n = mkShots.length;
+  zone.classList.toggle("has-shot", n > 0);
+  $("#mk-drop-empty").hidden = n > 0;
+  $("#mk-shots").hidden = n === 0;
+  $("#mk-shot-count").textContent = n
+    ? "— " + n + " attached" + (n >= MAX_SHOTS ? " (max)" : "")
+    : "— you can add several";
+  if(!n){ $("#mk-shots").innerHTML = ""; return; }
+  $("#mk-shots").innerHTML =
+    mkShots.map((s,i) =>
+      '<div class="shot-chip">' +
+        '<img src="' + esc(s.thumb) + '" alt="Screenshot ' + (i+1) + '" data-shot="' + i + '" />' +
+        '<button type="button" class="shot-del" data-del-shot="' + i + '" title="Remove">✕</button>' +
+        '<span class="shot-n">' + (i+1) + '</span>' +
+      '</div>'
+    ).join("") +
+    (n < MAX_SHOTS
+      ? '<button type="button" class="shot-add" data-add-shot><span class="plus">+</span>Add more</button>'
+      : '');
 }
 
-async function acceptProofImage(fileOrBlob){
-  if(!fileOrBlob){ return; }
-  if(!/^image\//.test(fileOrBlob.type || "")){ toast("That file isn't an image.", 2600); return; }
-  try{
-    const im = await loadImage(fileOrBlob);
-    const thumb = drawScaled(im, PROOF_THUMB_MAX).toDataURL("image/jpeg", 0.72);
-    const blob  = await canvasToBlob(drawScaled(im, PROOF_FULL_MAX), "image/jpeg", 0.85);
-    mkShot = { thumb: thumb, blob: blob, w: im.width, h: im.height };
-    renderProofZone();
-  }catch(e){
-    toast(e.message || "Could not read that image.", 3200);
+async function acceptProofImages(files){
+  const list = Array.from(files || []).filter(f => f && /^image\//.test(f.type || ""));
+  if(!list.length){ toast("That file isn't an image.", 2600); return; }
+  const room = MAX_SHOTS - mkShots.length;
+  if(room <= 0){ toast("You can attach up to " + MAX_SHOTS + " screenshots.", 3000); return; }
+  const take = list.slice(0, room);
+  let failed = 0;
+  for(const f of take){
+    try{
+      const im = await loadImage(f);
+      const thumb = drawScaled(im, PROOF_THUMB_MAX).toDataURL("image/jpeg", 0.72);
+      const blob  = await canvasToBlob(drawScaled(im, PROOF_FULL_MAX), "image/jpeg", 0.85);
+      mkShots.push({ thumb: thumb, blob: blob, w: im.width, h: im.height });
+    }catch(e){ failed++; }
   }
+  renderProofZone();
+  if(list.length > room) toast("Added " + take.length + " — " + MAX_SHOTS + " screenshots is the limit.", 3400);
+  else if(failed) toast(failed + " image" + (failed>1?"s":"") + " couldn't be read.", 3000);
 }
 
 (function wireDropZone(){
   const zone = $("#mk-drop");
   zone.addEventListener("click", e=>{
-    if(e.target.closest("#mk-shot-clear")) return;
+    /* clicking a thumbnail views it; the delete button removes it; anywhere
+       else in the zone opens the file picker */
+    const del = e.target.closest("[data-del-shot]");
+    if(del){
+      e.stopPropagation();
+      mkShots.splice(+del.dataset.delShot, 1);
+      renderProofZone();
+      return;
+    }
+    const img = e.target.closest("[data-shot]");
+    if(img){
+      e.stopPropagation();
+      openLightbox(mkShots.map(s => s.thumb), +img.dataset.shot, "");
+      return;
+    }
     $("#mk-shot-file").click();
   });
   zone.addEventListener("keydown", e=>{
     if(e.key === "Enter" || e.key === " "){ e.preventDefault(); $("#mk-shot-file").click(); }
   });
   $("#mk-shot-file").addEventListener("change", e=>{
-    const f = e.target.files && e.target.files[0];
-    if(f) acceptProofImage(f);
+    acceptProofImages(e.target.files);
     e.target.value = "";
-  });
-  $("#mk-shot-clear").addEventListener("click", e=>{
-    e.stopPropagation();
-    mkShot = null; renderProofZone();
   });
   ["dragenter","dragover"].forEach(ev=>
     zone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); zone.classList.add("dragover"); }));
@@ -2576,48 +2704,72 @@ async function acceptProofImage(fileOrBlob){
     e.preventDefault(); e.stopPropagation();
     zone.classList.remove("dragover");
     const dt = e.dataTransfer; if(!dt) return;
-    if(dt.files && dt.files.length){ acceptProofImage(dt.files[0]); return; }
+    if(dt.files && dt.files.length){ acceptProofImages(dt.files); return; }
     /* an image dragged straight from another browser tab arrives as a URL */
     const uri = dt.getData("text/uri-list") || dt.getData("text/plain");
     if(uri && /^https?:\/\//.test(uri)){
-      fetch(uri).then(r => r.blob()).then(acceptProofImage)
+      fetch(uri).then(r => r.blob()).then(b => acceptProofImages([b]))
         .catch(()=> toast("That site won't allow the image to be read.\nSave it and drop the file instead.", 4200));
     }
   });
-  /* the whole point: Print Screen / Snipping Tool then Ctrl+V */
+  /* the whole point: Print Screen / Snipping Tool then Ctrl+V. A paste can
+     carry more than one image, so take them all. */
   document.addEventListener("paste", e=>{
     if(!$("#m-mark").classList.contains("open")) return;
     const items = (e.clipboardData && e.clipboardData.items) || [];
+    const files = [];
     for(const it of items){
       if(it.kind === "file" && /^image\//.test(it.type)){
-        e.preventDefault();
-        acceptProofImage(it.getAsFile());
-        return;
+        const f = it.getAsFile();
+        if(f) files.push(f);
       }
     }
+    if(files.length){ e.preventDefault(); acceptProofImages(files); }
   });
   /* don't let a stray drop anywhere else navigate the page away */
   ["dragover","drop"].forEach(ev=>
     document.addEventListener(ev, e=>{ if(!e.target.closest("#mk-drop")) e.preventDefault(); }));
 })();
 
-/* ---- lightbox for viewing a stored proof full size ---- */
-function openLightbox(src, link){
-  $("#lb-img").src = src;
-  $("#lb-note").innerHTML = link
-    ? 'Preview stored on the board. <a href="' + esc(link) + '" target="_blank" rel="noopener">Open the full-size image in Discord →</a>'
-    : "Preview stored on the board.";
+/* ---- lightbox: pages through a submission's screenshots ---- */
+let lbList = [], lbIndex = 0, lbLink = "";
+function drawLightbox(){
+  if(!lbList.length) return;
+  lbIndex = (lbIndex + lbList.length) % lbList.length;
+  $("#lb-img").src = lbList[lbIndex];
+  const counter = lbList.length > 1
+    ? "Screenshot " + (lbIndex + 1) + " of " + lbList.length + " — use ← → to page. "
+    : "";
+  $("#lb-note").innerHTML = counter + "Preview stored on the board." +
+    (lbLink ? ' <a href="' + esc(lbLink) + '" target="_blank" rel="noopener">Open the full-size images in Discord →</a>' : "");
+  $("#lb-prev").hidden = $("#lb-next").hidden = lbList.length < 2;
+}
+function openLightbox(srcOrList, index, link){
+  lbList = Array.isArray(srcOrList) ? srcOrList.slice() : [srcOrList];
+  lbIndex = +index || 0;
+  lbLink = link || "";
+  drawLightbox();
   $("#lightbox").classList.add("open");
 }
 $("#lightbox").addEventListener("click", e=>{
-  if(e.target.tagName !== "A") $("#lightbox").classList.remove("open");
+  if(e.target.closest("#lb-prev")){ e.stopPropagation(); lbIndex--; drawLightbox(); return; }
+  if(e.target.closest("#lb-next")){ e.stopPropagation(); lbIndex++; drawLightbox(); return; }
+  if(e.target.closest("#lb-close")){ $("#lightbox").classList.remove("open"); return; }
+  if(e.target.tagName !== "A" && e.target.id !== "lb-img") $("#lightbox").classList.remove("open");
 });
 document.addEventListener("keydown", e=>{
+  if(!$("#lightbox").classList.contains("open")) return;
   if(e.key === "Escape") $("#lightbox").classList.remove("open");
+  else if(e.key === "ArrowLeft"){ lbIndex--; drawLightbox(); }
+  else if(e.key === "ArrowRight"){ lbIndex++; drawLightbox(); }
 });
+/* any thumbnail anywhere opens the whole set it belongs to */
 document.addEventListener("click", e=>{
   const t = e.target.closest(".proof-thumb[data-full]");
-  if(t) openLightbox(t.dataset.full, t.dataset.link || "");
+  if(!t) return;
+  const strip = t.closest(".proof-strip");
+  const all = strip ? $$(".proof-thumb[data-full]", strip).map(x => x.dataset.full) : [t.dataset.full];
+  openLightbox(all, all.indexOf(t.dataset.full), t.dataset.link || "");
 });
 
 $("#mk-complete").addEventListener("click", ()=> setTileDone(true));
@@ -2639,11 +2791,11 @@ function setTileDone(done){
   if(!S.progress[currentTeam]) S.progress[currentTeam] = {};
   const prev = S.progress[currentTeam][t.id] || {};
   let val = null;
-  const shotBlob = (mkShot && mkShot.blob) || null;   /* only a NEW image uploads */
+  const shotBlobs = mkShots.map(s => s.blob).filter(Boolean);  /* only NEW images upload */
   if(done){
     val = { at: Date.now(), by: $("#mk-who").value.trim().slice(0,40), proof: $("#mk-proof").value.trim().slice(0,400) };
-    if(mkShot && mkShot.thumb) val.shot = mkShot.thumb;
-    if(!shotBlob && prev.link) val.link = prev.link;  /* keep the old Discord link */
+    if(mkShots.length) val.shots = mkShots.map(s => s.thumb);
+    if(!shotBlobs.length && prev.link) val.link = prev.link;  /* keep the old Discord link */
     /* An already-approved tile that gets edited stays approved; anything
        else (new claim, or re-submitting a rejected one) goes to the queue. */
     if(S.settings.review) val.st = (statusOf(prev) === "a" && prev.at) ? "a" : "p";
@@ -2670,7 +2822,7 @@ function setTileDone(done){
     else if(newLines.length) toast("BINGO!\n" + newLines.map(L => L.name).join(" & "), 2600, 2300);
     if(S.settings.autoPost && (getWebhookFor(currentTeam) || getRefereeHook())){
       const teamAtPost = currentTeam, tileId = t.id;
-      postCompletion(t, teamAtPost, after, before, shotBlob)
+      postCompletion(t, teamAtPost, after, before, shotBlobs)
         .then(link=>{
           /* store the permalink Discord handed back, so the board can point
              at the full-size proof long after the local thumbnail */
@@ -2685,7 +2837,7 @@ function setTileDone(done){
   } else {
     toast(label + " marked incomplete.", 1800);
   }
-  mkShot = null;
+  mkShots = [];
   markingIndex = -1;
 }
 
@@ -3197,7 +3349,7 @@ function getRefereeHook(){
   return m.__referee__ || S.settings.refereeHook || "";
 }
 
-async function postCompletion(tile, teamId, after, before, proofBlob){
+async function postCompletion(tile, teamId, after, before, proofBlobs){
   const teamUrl = getWebhookFor(teamId);
   const refUrl  = getRefereeHook();
   if(!teamUrl && !refUrl) return null;
@@ -3216,7 +3368,11 @@ async function postCompletion(tile, teamId, after, before, proofBlob){
   if(last.by)    baseFields.push({ name: "Completed by", value: String(last.by).slice(0,100), inline: true });
   if(last.proof) baseFields.push({ name: "Notes", value: String(last.proof).slice(0,900) });
 
-  const proofFile = proofBlob ? { blob: proofBlob, name: "proof.jpg" } : null;
+  const proofFiles = (proofBlobs || []).filter(Boolean)
+    .map((b, i) => ({ blob: b, name: "proof" + (i + 1) + ".jpg" }));
+  const proofFile = proofFiles[0] || null;   /* the one the embed displays */
+  const extraNote = proofFiles.length > 1
+    ? "\n\n📎 " + proofFiles.length + " screenshots attached." : "";
   let link = "";
 
   /* --- referee first: the proof image is the point, so keep it uncluttered
@@ -3228,13 +3384,13 @@ async function postCompletion(tile, teamId, after, before, proofBlob){
         embeds: [{
           title: "⏳ Awaiting review — " + (tile.name || "Tile"),
           description: "**" + team.name + "** on *" + (S.title || "Clan Bingo") + "*" +
-                       (proofFile ? "" : "\n\n⚠️ No proof screenshot was attached."),
+                       (proofFile ? extraNote : "\n\n⚠️ No proof screenshot was attached."),
           color: color,
           fields: baseFields,
-          image: proofFile ? { url: "attachment://proof.jpg" } : undefined,
+          image: proofFile ? { url: "attachment://" + proofFile.name } : undefined,
           timestamp: new Date().toISOString()
         }]
-      }, proofFile ? [proofFile] : [], true);
+      }, proofFiles, true);
       link = await messageLink(refUrl, msg);
     }catch(e){
       toast("Referee post failed:\n" + e.message, 4600);
@@ -3253,17 +3409,19 @@ async function postCompletion(tile, teamId, after, before, proofBlob){
 
     const files = [];
     if(boardBlob) files.push({ blob: boardBlob, name: "board.jpg" });
-    if(proofFile) files.push(proofFile);
+    proofFiles.forEach(f => files.push(f));
 
     await sendWebhook(teamUrl, {
       username: getHookName(),
       embeds: [{
         title: "✅ " + (tile.name || "Tile") + " — " + team.name,
-        description: (S.title || "Clan Bingo") + (refUrl ? "\nSent to the referees for review." : ""),
+        description: (S.title || "Clan Bingo") +
+                     (refUrl ? "\nSent to the referees for review." : "") + extraNote,
         color: color,
         fields: fields,
-        image: boardBlob ? { url: "attachment://board.jpg" } : (proofFile ? { url: "attachment://proof.jpg" } : undefined),
-        thumbnail: (boardBlob && proofFile) ? { url: "attachment://proof.jpg" } : undefined,
+        image: boardBlob ? { url: "attachment://board.jpg" }
+                         : (proofFile ? { url: "attachment://" + proofFile.name } : undefined),
+        thumbnail: (boardBlob && proofFile) ? { url: "attachment://" + proofFile.name } : undefined,
         timestamp: new Date().toISOString()
       }]
     }, files);
