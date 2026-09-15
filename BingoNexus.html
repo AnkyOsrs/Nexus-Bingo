@@ -2,6 +2,12 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- GitHub Pages serves HTML with a 10-minute cache, and browsers hold it
+     longer. Without this, an updated board can keep loading the old copy for
+     everyone, which is indistinguishable from a feature being broken. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Clan Bingo Board</title>
 <style>
 /* ===========================================================================
@@ -1517,6 +1523,12 @@ const DEFAULT_FIREBASE = {
   measurementId: "G-CLFLZR22CF"
 };
 const DEFAULT_BOARD_ID = "nexus-bingo";
+
+/* Stamped in at build time. Shown in Settings and on every Discord post, so
+   "is this browser actually running the file I uploaded?" is answerable at a
+   glance instead of guessed at — browsers and GitHub Pages both cache HTML
+   hard, and a stale copy looks exactly like a broken feature. */
+const BUILD_ID = "2026.09.15-e6a26f";
 
 const GRID_N = 5;
 const TILE_COUNT = GRID_N * GRID_N;
@@ -3362,21 +3374,26 @@ $("#st-wildmode").addEventListener("change", renderWildModeHint);
 $("#st-gateway").addEventListener("change", renderWildModeHint);
 
 function renderBoardUrlHint(){
+  /* Report what THIS browser will actually send, computed the same way the
+     webhook does, rather than describing what should happen. */
   const typed = ($("#st-boardurl").value || "").trim();
-  const auto = pageUrl();
-  let msg;
-  if(typed){
-    msg = /^https?:\/\/\S+$/.test(typed)
-      ? "Every Discord post's title links here."
-      : "⚠️ That isn't a valid http(s) address — posts will go out without a link.";
-  } else if(auto){
-    msg = "Empty, so posts link to wherever the board is opened from — right now that's <code>" +
-          esc(auto) + "</code>. Fill this in only if you want a fixed address instead.";
+  const saved = (S.settings.boardUrl || "").trim();
+  const live = { url: "", why: "" };
+  if(typed !== saved){
+    live.url = /^https?:\/\/\S+$/.test(typed) ? typed : "";
+    live.why = live.url ? "the address typed above (unsaved)" : "the address above isn't a valid http(s) link";
   } else {
-    msg = "This copy is opened from a file rather than a website, so there's nothing to link to. " +
-          "Once it's hosted, posts link back automatically — or paste the address here.";
+    const st = boardUrlStatus();
+    live.url = st.url; live.why = st.why;
   }
-  $("#st-boardurl-hint").innerHTML = msg;
+  $("#st-boardurl-hint").innerHTML =
+    (live.url
+      ? '✅ Posts from <b>this browser</b> will link to<br><code>' + esc(live.url) + '</code><br>' +
+        '<span style="color:var(--ink-dim)">— ' + esc(live.why) + '</span>'
+      : '⚠️ Posts from <b>this browser</b> will go out <b>without a link</b> — ' + esc(live.why) + '.') +
+    '<br><span style="color:var(--ink-dim)">Leave the box empty to use whatever address the board ' +
+    'is opened from. Build <code>' + esc(BUILD_ID) + '</code> — every Discord post carries this, ' +
+    'so you can tell whether a poster is on the current file.</span>';
 }
 $("#st-boardurl").addEventListener("input", renderBoardUrlHint);
 $("#st-boardurl-auto").addEventListener("click", ()=>{
@@ -3783,8 +3800,22 @@ function getBoardUrl(){
 function linkEmbed(embed){
   const url = getBoardUrl();
   if(url) embed.url = url;
-  embed.footer = { text: (S.title || "Clan Bingo") + (url ? " · click the title to open the board" : "") };
+  embed.footer = { text: (S.title || "Clan Bingo") +
+    (url ? " · click the title to open the board" : " · no board link set") +
+    " · " + BUILD_ID };
   return embed;
+}
+/* plain-English answer to "what link will go out, and if none, why not" */
+function boardUrlStatus(){
+  const set = (S.settings.boardUrl || "").trim();
+  const auto = pageUrl();
+  const url = getBoardUrl();
+  if(url) return { url: url, why: set ? "the address set below" : "the address this page is served from" };
+  if(set) return { url: "", why: "the address set below isn't a valid http(s) link" };
+  if(!auto && !/^https?:$/.test(location.protocol))
+    return { url: "", why: "this copy is open as a local file, not from a website" };
+  if(!auto) return { url: "", why: "this copy is served from localhost, which nobody else can open" };
+  return { url: "", why: "no address could be worked out" };
 }
 
 /* A webhook's own object carries the guild id, which is the missing piece for
