@@ -1215,6 +1215,13 @@ body.shooting .tile-editbtn{ display:none !important; }
       </div>
     </div>
 
+    <label for="st-boardurl">Board link used in Discord posts</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="url" id="st-boardurl" placeholder="" style="flex:1">
+      <button type="button" class="btn small" id="st-boardurl-auto">Use this page</button>
+    </div>
+    <div class="hint" id="st-boardurl-hint"></div>
+
     <label for="st-who">Who can mark tiles complete?</label>
     <select id="st-who">
       <option value="leader">Admins and team leaders</option>
@@ -1426,7 +1433,7 @@ body.shooting .tile-editbtn{ display:none !important; }
      about the board (tiles, images, teams, settings, Firebase config) lives
      here, so an exported HTML file is fully self-contained.
      ========================================================================== -->
-<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.484,"gy":22.917,"gw":7.372,"gh":13.139,"px":3,"py":3,"wx":81.586,"wy":67.917,"ww":7.141,"wh":12.778},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a","pinHash":""},{"id":"team2","name":"Team 2","color":"#3d8ee8","pinHash":""},{"id":"team3","name":"Team 3","color":"#46c05a","pinHash":""},{"id":"team4","name":"Team 4","color":"#e0a52e","pinHash":""},{"id":"team5","name":"Team 5","color":"#a862e8","pinHash":""}],"wild":{"id":"wild","name":"Wildcard","desc":"Complete this to unlock any one locked tile of your choice.","img":"","pts":0},"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true,"gateway":false,"wildcard":true,"wildMode":"complete"},"bgImage":"","firebase":null,"updatedAt":0}</script>
+<script type="application/json" id="board-data">{"v":1,"title":"Nexus Bingo","calib":{"gx":31.484,"gy":22.917,"gw":7.372,"gh":13.139,"px":3,"py":3,"wx":81.586,"wy":67.917,"ww":7.141,"wh":12.778},"tiles":[{"id":"t1","name":"","desc":"","img":"","pts":10},{"id":"t2","name":"","desc":"","img":"","pts":10},{"id":"t3","name":"","desc":"","img":"","pts":10},{"id":"t4","name":"","desc":"","img":"","pts":10},{"id":"t5","name":"","desc":"","img":"","pts":10},{"id":"t6","name":"","desc":"","img":"","pts":10},{"id":"t7","name":"","desc":"","img":"","pts":10},{"id":"t8","name":"","desc":"","img":"","pts":10},{"id":"t9","name":"","desc":"","img":"","pts":10},{"id":"t10","name":"","desc":"","img":"","pts":10},{"id":"t11","name":"","desc":"","img":"","pts":10},{"id":"t12","name":"","desc":"","img":"","pts":10},{"id":"t13","name":"","desc":"","img":"","pts":10},{"id":"t14","name":"","desc":"","img":"","pts":10},{"id":"t15","name":"","desc":"","img":"","pts":10},{"id":"t16","name":"","desc":"","img":"","pts":10},{"id":"t17","name":"","desc":"","img":"","pts":10},{"id":"t18","name":"","desc":"","img":"","pts":10},{"id":"t19","name":"","desc":"","img":"","pts":10},{"id":"t20","name":"","desc":"","img":"","pts":10},{"id":"t21","name":"","desc":"","img":"","pts":10},{"id":"t22","name":"","desc":"","img":"","pts":10},{"id":"t23","name":"","desc":"","img":"","pts":10},{"id":"t24","name":"","desc":"","img":"","pts":10},{"id":"t25","name":"","desc":"","img":"","pts":10}],"teams":[{"id":"team1","name":"Team 1","color":"#e6484a","pinHash":""},{"id":"team2","name":"Team 2","color":"#3d8ee8","pinHash":""},{"id":"team3","name":"Team 3","color":"#46c05a","pinHash":""},{"id":"team4","name":"Team 4","color":"#e0a52e","pinHash":""},{"id":"team5","name":"Team 5","color":"#a862e8","pinHash":""}],"wild":{"id":"wild","name":"Wildcard","desc":"Complete this to unlock any one locked tile of your choice.","img":"","pts":0},"progress":{},"settings":{"lineBonus":25,"blackoutBonus":100,"who":"leader","sound":true,"autoPost":true,"leaderPinHash":"a554d3f0173865681ff9abd6f2534020e1077713b9a3cddcd5215e165e07f3b6","refPinHash":"4e4ed756709031a05f1e977976eb4d7125336a59cdb6cf903410e5709d6c1444","refereeHook":"","review":true,"pendingCounts":true,"gateway":false,"wildcard":true,"wildMode":"complete","boardUrl":"https://ankyosrs.github.io/Nexus-Bingo/BingoNexus.html"},"bgImage":"","firebase":null,"updatedAt":0}</script>
 
 <!-- html2canvas 1.4.1 (MIT) — bundled so board screenshots work with no
      internet connection and no CDN dependency. -->
@@ -1613,7 +1620,10 @@ function defaultState(){
       /* what an approved Wildcard does to the tile the team picked:
          "complete" marks it done outright, "unlock" only opens it (which
          needs `gateway` on to mean anything at all). */
-      wildMode: "complete"
+      wildMode: "complete",
+      /* where Discord posts should link back to. Left empty the board uses
+         its own address, which is right whenever it's properly hosted. */
+      boardUrl: ""
     },
     /* an admin-uploaded background, as a data URI; empty = use the art baked
        into the file */
@@ -1669,6 +1679,7 @@ function migrate(obj){
   if(!s.settings.refPinHash)    s.settings.refPinHash    = REF_PIN_HASH_DEFAULT;
   if(["leader","admin","anyone"].indexOf(s.settings.who) < 0) s.settings.who = "leader";
   if(["complete","unlock"].indexOf(s.settings.wildMode) < 0) s.settings.wildMode = defSettings.wildMode;
+  if(typeof s.settings.boardUrl !== "string") s.settings.boardUrl = "";
   /* booleans need a type check, not a truthiness check, so an intentional
      `false` survives while a missing key falls back to the default */
   ["review","pendingCounts","sound","autoPost","gateway","wildcard"].forEach(k=>{
@@ -3350,6 +3361,31 @@ function renderWildModeHint(){
 $("#st-wildmode").addEventListener("change", renderWildModeHint);
 $("#st-gateway").addEventListener("change", renderWildModeHint);
 
+function renderBoardUrlHint(){
+  const typed = ($("#st-boardurl").value || "").trim();
+  const auto = pageUrl();
+  let msg;
+  if(typed){
+    msg = /^https?:\/\/\S+$/.test(typed)
+      ? "Every Discord post's title links here."
+      : "⚠️ That isn't a valid http(s) address — posts will go out without a link.";
+  } else if(auto){
+    msg = "Empty, so posts link to wherever the board is opened from — right now that's <code>" +
+          esc(auto) + "</code>. Fill this in only if you want a fixed address instead.";
+  } else {
+    msg = "This copy is opened from a file rather than a website, so there's nothing to link to. " +
+          "Once it's hosted, posts link back automatically — or paste the address here.";
+  }
+  $("#st-boardurl-hint").innerHTML = msg;
+}
+$("#st-boardurl").addEventListener("input", renderBoardUrlHint);
+$("#st-boardurl-auto").addEventListener("click", ()=>{
+  const u = pageUrl();
+  if(!u){ toast("This page isn't being served from a website,\nso there's no address to use.", 3600); return; }
+  $("#st-boardurl").value = u;
+  renderBoardUrlHint();
+});
+
 function openSettings(){
   $("#st-title").value = S.title || "";
   $("#st-line").value  = S.settings.lineBonus;
@@ -3362,7 +3398,10 @@ function openSettings(){
   $("#st-gateway").checked        = !!S.settings.gateway;
   $("#st-wildcard").checked       = !!S.settings.wildcard;
   $("#st-wildmode").value         = S.settings.wildMode || "complete";
+  $("#st-boardurl").value         = S.settings.boardUrl || "";
+  $("#st-boardurl").placeholder   = pageUrl() || "https://your-name.github.io/your-board/";
   renderWildModeHint();
+  renderBoardUrlHint();
   const centre = S.tiles[CENTRE_INDEX];
   $("#st-gateway-hint").innerHTML =
     'Every other tile is padlocked until a team completes the middle square — currently <b>' +
@@ -3387,6 +3426,12 @@ $("#st-save").addEventListener("click", ()=>{
   S.settings.gateway       = $("#st-gateway").checked;
   S.settings.wildcard      = $("#st-wildcard").checked;
   S.settings.wildMode      = $("#st-wildmode").value === "unlock" ? "unlock" : "complete";
+
+  const bu = ($("#st-boardurl").value || "").trim();
+  if(bu && !/^https?:\/\/\S+$/.test(bu)){
+    toast("The board link must start with http:// or https://", 3400); return;
+  }
+  S.settings.boardUrl = bu;
 
   const newPin = $("#st-leaderpin").value.trim();
   const newRef = $("#st-refpin").value.trim();
@@ -3699,6 +3744,8 @@ async function captureBoard(){
 /* `files` is an array of {blob, name}. With `wantJson` the call asks Discord
    to return the created message so we can build a permanent link to it. */
 async function sendWebhook(url, payload, files, wantJson){
+  /* done here rather than at each call site so no post can miss the link */
+  if(payload && Array.isArray(payload.embeds)) payload.embeds.forEach(linkEmbed);
   const fd = new FormData();
   fd.append("payload_json", JSON.stringify(payload));
   (files || []).forEach((f, i)=>{ if(f && f.blob) fd.append("files[" + i + "]", f.blob, f.name); });
@@ -3711,6 +3758,33 @@ async function sendWebhook(url, payload, files, wantJson){
   }
   if(wantJson){ try{ return await r.json(); }catch(e){ return null; } }
   return null;
+}
+
+/* ---- linking Discord posts back to the board ----------------------------
+   An embed with a `url` renders its title as a hyperlink, so every post
+   becomes a way back to the board. The address of the page it's posted from
+   is the right answer whenever the board is properly hosted, so that's the
+   default and no setup is needed; an admin can override it in Settings for a
+   custom domain or a canonical URL. A file:// or localhost page gives
+   nothing, since that link would be useless to everyone else. */
+function pageUrl(){
+  try{
+    if(!/^https?:$/.test(location.protocol)) return "";
+    if(/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname)) return "";
+    return location.origin + location.pathname;
+  }catch(e){ return ""; }
+}
+function getBoardUrl(){
+  const set = (S.settings.boardUrl || "").trim();
+  const url = set || pageUrl();
+  return /^https?:\/\/\S+$/.test(url) ? url : "";   /* Discord rejects a bad url */
+}
+/* stamp the link and a footer onto an embed just before it is sent */
+function linkEmbed(embed){
+  const url = getBoardUrl();
+  if(url) embed.url = url;
+  embed.footer = { text: (S.title || "Clan Bingo") + (url ? " · click the title to open the board" : "") };
+  return embed;
 }
 
 /* A webhook's own object carries the guild id, which is the missing piece for
