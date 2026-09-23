@@ -663,7 +663,16 @@ body.ref:not(.admin) #ref-bar{ display:flex; }
 .hint code{ background:rgba(0,0,0,.5); padding:1px 5px; border-radius:3px; font-size:11px; }
 .err-msg{ color:#ff8f8f; font-size:13px; margin-top:8px; min-height:18px; }
 .ok-msg{ color:#8fe0a0; font-size:13px; margin-top:2px; }
+.ok-msg.warn{ color:#e8b96a; }
 .ok-msg:empty, .err-msg:empty{ min-height:0; margin-top:0; }
+
+.lockbar{
+  font-size:12.5px; line-height:1.5; border-radius:5px;
+  padding:8px 11px; margin:10px 0 14px; border:1px solid transparent;
+}
+.lockbar.bad{     background:rgba(150,40,40,.22);  border-color:rgba(230,110,110,.45); color:#ffb4b4; }
+.lockbar.good{    background:rgba(40,110,60,.20);  border-color:rgba(120,210,150,.40); color:#a6e5ba; }
+.lockbar.unknown{ background:rgba(0,0,0,.35);      border-color:rgba(140,116,68,.35);  color:var(--ink-dim); }
 
 /* Device-key panel */
 .key-step{ font-size:13px; color:var(--ink); margin:2px 0 6px; line-height:1.5; }
@@ -1011,6 +1020,7 @@ body.shooting .tile-editbtn{ display:none !important; }
     <span class="tag">ADMIN</span>
     <span id="admin-who"></span>
     <button class="btn small" data-act="queue">Review<span class="qbadge zero" data-qbadge="">0</span></button>
+    <button class="btn small" data-act="devkey" title="This device's key and the rules to publish">Admin Key</button>
     <button class="btn small" data-act="teams">Teams</button>
     <button class="btn small" data-act="settings">Settings</button>
     <button class="btn small" data-act="calibrate">Calibrate</button>
@@ -1068,6 +1078,8 @@ body.shooting .tile-editbtn{ display:none !important; }
     <div class="hint" style="margin-bottom:8px">There is no password. This browser has its own key,
     and the database decides whether that key is allowed to change the board. Nothing is ever typed
     in here, so there is nothing anyone can take by reading the page.</div>
+
+    <div class="lockbar unknown" id="si-lock">Checking the board's rules…</div>
 
     <div class="key-step"><b>1.</b> This browser's key</div>
     <div class="keybox"><code id="si-uid">…</code></div>
@@ -1602,7 +1614,7 @@ const DEFAULT_BOARD_ID = "nexus-bingo";
    "is this browser actually running the file I uploaded?" is answerable at a
    glance instead of guessed at — browsers and GitHub Pages both cache HTML
    hard, and a stale copy looks exactly like a broken feature. */
-const BUILD_ID = "2026.09.23-dc573b";
+const BUILD_ID = "2026.09.23-9880ac";
 
 const GRID_N = 5;
 const TILE_COUNT = GRID_N * GRID_N;
@@ -1845,7 +1857,7 @@ function looksConfigured(){
 /* ========================== FIREBASE SYNC ================================= */
 const Sync = {
   on:false, db:null, boardId:null, refCfg:null, refProg:null, refInfo:null, status:"local",
-  authSettled:false,
+  authSettled:false, dbUrl:"",
 
   setPill(kind, text){
     const pill = $("#sync-pill");
@@ -1889,6 +1901,24 @@ const Sync = {
     }
   },
 
+  /* Is the board still open to the whole internet? Asked honestly: a plain
+     REST write carrying no credentials at all. If that is accepted, the rules
+     are not protecting anything, whatever this browser can do. Returns
+     true / false, or null when the question couldn't be put. */
+  async openToTheWorld(){
+    if(!this.dbUrl || !this.boardId) return null;
+    try{
+      const url = this.dbUrl + "/boards/" + encodeURIComponent(this.boardId) + "/_openprobe.json";
+      const r = await fetch(url, { method:"PUT", body: String(Date.now()) });
+      if(r.ok){
+        fetch(url, { method:"DELETE" }).catch(()=>{});   /* don't leave litter behind */
+        return true;
+      }
+      if(r.status === 401 || r.status === 403) return false;
+      return null;
+    }catch(e){ return null; }
+  },
+
   /* The only question that matters: will the database accept a board change
      from this browser? Asking it directly beats any check this page could do. */
   async probeAdmin(){
@@ -1909,6 +1939,7 @@ const Sync = {
       }
       firebase.initializeApp(cfg);
       this.db = firebase.database();
+      this.dbUrl = String(cfg.databaseURL || "").replace(/\/+$/, "");
       this.boardId = boardId || "board";
       const root = "boards/" + this.boardId;
       this.refCfg  = this.db.ref(root + "/config");
@@ -2914,23 +2945,52 @@ function fillDeviceModal(uid){
   $("#si-rules").textContent = uid ? adminRulesText(uid) : "…";
 }
 
-async function adminDeviceCheck(){
+/* Being let in doesn't mean the board is protected — a board whose rules are
+   still wide open lets everybody in. Say which of the two just happened. */
+function showLockState(state){
+  const el = $("#si-lock");
+  el.className = "lockbar " + (state === "open" ? "bad" : state === "locked" ? "good" : "unknown");
+  el.textContent =
+    state === "open"   ? "⚠ This board is still open — anyone who has the link can change it. Do steps 1–2."
+  : state === "locked" ? "✓ Locked down. Only the keys in your rules can change this board."
+  :                      "Couldn't tell whether the rules are locked down — check them yourself.";
+}
+
+async function adminDeviceCheck(opts){
+  const force = !!(opts && opts.force);   /* opened from the toolbar: always show the panel */
   $("#si-err").textContent = "";
   $("#si-ok").textContent  = "";
+  $("#si-ok").className    = "ok-msg";
   const btn = $("#si-go");
   btn.disabled = true; btn.textContent = "Checking…";
-  let opened = false;
+  if(force && !isModalOpen("m-signin")) openModal("m-signin");
+  let opened = isModalOpen("m-signin");
   try{
     const u = await Sync.ensureDeviceId();
     const uid = (u && u.uid) || "";
     fillDeviceModal(uid);
     const ok = await Sync.probeAdmin();
+    const wideOpen = await Sync.openToTheWorld();
+    showLockState(wideOpen === true ? "open" : wideOpen === false ? "locked" : "unknown");
+
     if(ok){
-      closeModal("m-signin");
-      setAdmin(true);
-      toast("Admin mode on — this device is authorised.", 2600);
+      if(!isAdmin) setAdmin(true);
+      if(wideOpen === true){
+        /* Let them in — but don't let them walk away thinking it's secured. */
+        if(!isModalOpen("m-signin")){ openModal("m-signin"); opened = true; }
+        $("#si-ok").className = "ok-msg warn";
+        $("#si-ok").textContent = "Admin mode is on, but only because the board is still open to\n" +
+          "everyone. Publish the rules below to make it yours alone.";
+        toast("Admin on — but your board is still open to everyone.\nSee the panel.", 5200);
+      }else if(force){
+        $("#si-ok").textContent = "This device is authorised.";
+      }else{
+        closeModal("m-signin");
+        toast("Admin mode on — this device is authorised.", 2600);
+      }
       return;
     }
+
     if(!isModalOpen("m-signin")){ openModal("m-signin"); opened = true; }
     $("#si-err").textContent = "This device isn't on the board's admin list yet.\n" +
       "Do steps 1–2, then press Check access again.";
@@ -2943,7 +3003,7 @@ async function adminDeviceCheck(){
     if(opened) setTimeout(()=> btn.focus(), 60);
   }
 }
-$("#si-go").addEventListener("click", adminDeviceCheck);
+$("#si-go").addEventListener("click", ()=> adminDeviceCheck());
 
 function copyOut(text, label, btn){
   const done = ()=>{
@@ -2973,6 +3033,13 @@ $("#admin-bar").addEventListener("click", e=>{
   const act = b.dataset.act;
   if(act === "exit"){ setAdmin(false); toast("Admin mode off."); }
   else if(act === "queue") openQueue();
+  else if(act === "devkey"){
+    if(!Sync.serverEnforced()){
+      toast("This copy isn't connected to live sync,\nso there's nothing for the database to enforce.", 4200);
+      return;
+    }
+    adminDeviceCheck({ force:true });
+  }
   else if(act === "teams") openTeams();
   else if(act === "settings") openSettings();
   else if(act === "calibrate") openCalibrate();
